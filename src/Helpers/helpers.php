@@ -16,7 +16,7 @@ function kv(string $key, mixed $val = null): mixed
     return count(func_get_args()) == 1 ? KeyValue::get($key) : KeyValue::set($key, $val);
 }
 
-function appName(): string
+function appName(): ?string
 {
     return kv('app.name');
 }

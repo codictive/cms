@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('cms::layouts.auth')
 
 @section('title', title('تسجيل'))
 

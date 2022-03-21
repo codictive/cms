@@ -2,5 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'Codictive\\Cms\\Controllers\\App'], function () {
+$cfg = [
+    'namespace'  => 'Codictive\\Cms\\Controllers\\App',
+    'middleware' => 'web',
+];
+
+Route::group($cfg, function () {
+    Route::get('/', 'DashboardController@index')->name('app.index');
 });

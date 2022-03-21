@@ -1,0 +1,245 @@
+/*
+Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+*/
+
+@font-face {
+    font-display: block;
+    font-family: Font Awesome\ 5 Brands;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/fa-brands-400.eot?89a52ae1d02b86d6143987c865471c24);
+    src: url(/fonts/fa-brands-400.eot?89a52ae1d02b86d6143987c865471c24?#iefix) format("embedded-opentype"), url(/fonts/fa-brands-400.woff2?c1210e5ebe4344da508396540be7f52c) format("woff2"), url(/fonts/fa-brands-400.woff?329a95a9172fdb2cccb4f9347ed55233) format("woff"), url(/fonts/fa-brands-400.ttf?9e138496e8f1719c6ebf0abe50563635) format("truetype"), url(/fonts/fa-brands-400.svg?216edb96b562c79adc09e2d3c63db7c0#fontawesome) format("svg")
+}
+
+.fab {
+    font-weight: 400
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/bold.eot?07c7c7ae27f00f4f24030ca1533071c3);
+    src: url(/fonts/bold.eot?07c7c7ae27f00f4f24030ca1533071c3?#iefix) format("embedded-opentype"), url(/fonts/bold.woff2?e1e745c58946958ae74c03c4349665fe) format("woff2"), url(/fonts/bold.woff?aca04437e9de61ba83f0d25b542443e0) format("woff"), url(/fonts/bold.ttf?c1028d883ca853d778a86a5552a56b47) format("truetype")
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 500;
+    src: url(/fonts/medium.eot?d2166dd5bd40a2371049d3a18e612636);
+    src: url(/fonts/medium.eot?d2166dd5bd40a2371049d3a18e612636?#iefix) format("embedded-opentype"), url(/fonts/medium.woff2?fa9f5c222a7e9873c3f6c70b8d4695bf) format("woff2"), url(/fonts/medium.woff?15610011937c17d5a65b3c743bc8c0e8) format("woff"), url(/fonts/medium.ttf?2c2662921f33ab388d113f628651557c) format("truetype")
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 300;
+    src: url(/fonts/light.eot?f380de4dfa9be78d28587762148aa4a2);
+    src: url(/fonts/light.eot?f380de4dfa9be78d28587762148aa4a2?#iefix) format("embedded-opentype"), url(/fonts/light.woff2?9973d244ce4c2f4e353f81083661e5a9) format("woff2"), url(/fonts/light.woff?18722b5d57697c6f0a68cc174222ef0d) format("woff"), url(/fonts/light.ttf?8a5ebb8ee5d62003889d69e7adbd3867) format("truetype")
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 200;
+    src: url(/fonts/ultralight.eot?6bddc52b2e89ad74c672eb592d9c71ec);
+    src: url(/fonts/ultralight.eot?6bddc52b2e89ad74c672eb592d9c71ec?#iefix) format("embedded-opentype"), url(/fonts/ultralight.woff2?f08b5553884a47aa9048381e2cdad036) format("woff2"), url(/fonts/ultralight.woff?1277eaa7d67a8c88a661adeaf68212c3) format("woff"), url(/fonts/ultralight.ttf?f153ad801b35137049ebee491c12deb8) format("truetype")
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/regular.eot?8c54d6fb81931d15458a504433301a09);
+    src: url(/fonts/regular.eot?8c54d6fb81931d15458a504433301a09?#iefix) format("embedded-opentype"), url(/fonts/regular.woff2?34a733869ee6a21bc95f2b1a120e336e) format("woff2"), url(/fonts/regular.woff?9b9f07b06f305ed04885a0dd8a025ce2) format("woff"), url(/fonts/regular.ttf?37068ccd1d41c7c4650446a3bb081604) format("truetype")
+}
+
+body {
+    /* Font */
+    /* Emoji fonts are added to visualise them nicely in Internet Explorer. */
+    font-family: 'IRANSansWeb', 'Ubuntu', sans-serif;
+    font-size: 12px;
+
+    /* Text color */
+    color: #333;
+
+    /* Remove the background color to make it transparent. */
+    background-color: #fff;
+
+    margin: 20px;
+}
+
+.cke_editable {
+    font-size: 13px;
+    line-height: 1.6;
+
+    /* Fix for missing scrollbars with RTL texts. (#10488) */
+    word-wrap: break-word;
+}
+
+blockquote {
+    font-style: italic;
+    font-family: 'IRANSansWeb', 'Ubuntu', sans-serif;
+    padding: 2px 0;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 0;
+}
+
+.cke_contents_ltr blockquote {
+    padding-left: 20px;
+    padding-right: 8px;
+    border-left-width: 5px;
+}
+
+.cke_contents_rtl blockquote {
+    padding-left: 8px;
+    padding-right: 20px;
+    border-right-width: 5px;
+}
+
+a {
+    color: #0782C1;
+}
+
+ol,
+ul,
+dl {
+    /* IE7: reset rtl list margin. (#7334) */
+    *margin-right: 0px;
+    /* Preserved spaces for list items with text direction different than the list. (#6249,#8049)*/
+    padding: 0 40px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+hr {
+    border: 0px;
+    border-top: 1px solid #ccc;
+}
+
+img.right {
+    border: 1px solid #ccc;
+    float: right;
+    margin-left: 15px;
+    padding: 5px;
+}
+
+img.left {
+    border: 1px solid #ccc;
+    float: left;
+    margin-right: 15px;
+    padding: 5px;
+}
+
+pre {
+    white-space: pre-wrap;
+    /* CSS 2.1 */
+    word-wrap: break-word;
+    /* IE7 */
+    -moz-tab-size: 4;
+    tab-size: 4;
+}
+
+.marker {
+    background-color: Yellow;
+}
+
+span[lang] {
+    font-style: italic;
+}
+
+figure {
+    text-align: center;
+    outline: solid 1px #ccc;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    margin: 10px 20px;
+    display: inline-block;
+}
+
+figure>figcaption {
+    text-align: center;
+    display: block;
+    /* For IE8 */
+}
+
+a>img {
+    padding: 1px;
+    margin: 1px;
+    border: none;
+    outline: 1px solid #0782C1;
+}
+
+/* Widget Styles */
+.code-featured {
+    border: 5px solid red;
+}
+
+.math-featured {
+    padding: 20px;
+    box-shadow: 0 0 2px rgba(200, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.05);
+    margin: 10px;
+}
+
+.image-clean {
+    border: 0;
+    background: none;
+    padding: 0;
+}
+
+.image-clean>figcaption {
+    font-size: .9em;
+    text-align: right;
+}
+
+.image-grayscale {
+    background-color: white;
+    color: #666;
+}
+
+.image-grayscale img,
+img.image-grayscale {
+    filter: grayscale(100%);
+}
+
+.embed-240p {
+    max-width: 426px;
+    max-height: 240px;
+    margin: 0 auto;
+}
+
+.embed-360p {
+    max-width: 640px;
+    max-height: 360px;
+    margin: 0 auto;
+}
+
+.embed-480p {
+    max-width: 854px;
+    max-height: 480px;
+    margin: 0 auto;
+}
+
+.embed-720p {
+    max-width: 1280px;
+    max-height: 720px;
+    margin: 0 auto;
+}
+
+.embed-1080p {
+    max-width: 1920px;
+    max-height: 1080px;
+    margin: 0 auto;
+}
