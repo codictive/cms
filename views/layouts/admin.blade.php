@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
-    <link href="/css/admin.css" rel="stylesheet">
+    <link href="/vendor/cms/css/admin.css" rel="stylesheet">
     @yield('head')
 </head>
 
@@ -113,7 +113,7 @@
             <div class="text-center">طراحی و پیاده‌سازی توسط <a target="_blank" rel="nofollow" href="https://codictive.net">Codictive</a></div>
         </div>
     </footer>
-    <script src="/js/admin.js"></script>
+    <script src="/vendor/cms/js/admin.js"></script>
     <script>
     var alertMessage = '';
     var alertLevel = 'success';

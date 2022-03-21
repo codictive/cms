@@ -30,12 +30,19 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'permissions');
 
         $this->publishes([
+            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+        ], 'cms.migrations');
+        $this->publishes([
+            __DIR__ . '/../database/seeders/' => database_path('seeders'),
+        ], 'cms.seeders');
+
+        $this->publishes([
             __DIR__ . '/../config/config.php'      => config_path('cms.php'),
             __DIR__ . '/../config/permissions.php' => config_path('permissions.php'),
-        ]);
+        ], 'cms.config');
 
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/cms'),
-        ], 'public');
+        ], 'cms.public');
     }
 }
