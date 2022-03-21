@@ -1,0 +1,42 @@
+{
+    "name": "codictive/cms",
+    "description": "A Laravel Based Content Management System",
+    "keywords": [
+        "cms",
+        "laravel"
+    ],
+    "type": "project",
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^9.5",
+        "intervention/image": "^2.7"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Codictive\\Cms\\": "src/"
+        },
+        "files": [
+            "src/Helpers/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Matrix",
+            "email": "ir.ma3x@gmail.com"
+        },
+        {
+            "name": "Moriella",
+            "email": "best.oflikee@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Codictive\\Cms\\ServiceProvider"
+            ]
+        }
+    }
+}
