@@ -1,15 +1,15 @@
 @extends('cms::layouts.auth')
 
-@section('title', title('تسجيل الدخول'))
+@section('title', title('ورود به سیستم'))
 
 @section('content')
 <div class="card">
-    <div class="card-header">تسجيل الدخول</div>
+    <div class="card-header">ورود به سیستم</div>
     <div class="card-body">
         <form id="loginForm" method="post" action="{{ route('auth.login') }}">
             @csrf
             <div class="form-group">
-                <label class="required" for="email">البريد الإلكتروني</label>
+                <label class="required" for="email">ایمیل</label>
                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
                 @error('email')
                 <span class="invalid-feedback" role="alert">
@@ -18,7 +18,7 @@
                 @enderror
             </div>
             <div class="form-group">
-                <label class="required" for="password">كلمه السر</label>
+                <label class="required" for="password">گذرواژه</label>
                 <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
                 @error('password')
                 <span class="invalid-feedback" role="alert">
@@ -29,7 +29,7 @@
             <button class="g-recaptcha btn btn-success"
             data-sitekey="{{ kv('keys.recaptcha.site_key') }}"
             data-callback='onSubmit'
-            data-action='submit'>دخول</button>
+            data-action='submit'>ورود</button>
         </form>
     </div>
 </div>

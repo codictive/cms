@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="fa">
 
 <head>
     <meta charset="utf-8">
@@ -49,7 +49,7 @@
         swAlert(alertLevel, alertMessage);
     }
     </script>
-    <script src="https://www.google.com/recaptcha/api.js?hl=ar"></script>
+    <script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
     @yield('scripts')
 </body>
 
