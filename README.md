@@ -6,6 +6,12 @@ A Laravel Based Content Management System
 
 - Run `composer require codictive/cms`
 - Add `Codictive\Cms\ServiceProvider::class` to the `providers` section of `config/app.php`
+- Publish files via:
+  - `php artisan vendor:publish --tag=cms.public`
+  - `php artisan vendor:publish --tag=cms.migrations`
+  - `php artisan vendor:publish --tag=cms.seeders`
+  - `php artisan vendor:publish --tag=cms.config`
+  - `php artisan vendor:publish --tag=cms.lang`
 - Remove this things from default Laravel installation:
   - default routes.
   - `User.php` from `app/Models`

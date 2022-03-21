@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\SystemLog;
+use Codictive\Cms\Models\SystemLog;
 use Intervention\Image\Facades\Image;
 
 /**

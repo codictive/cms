@@ -29,6 +29,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'cms');
         $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'permissions');
 
+        // Publish.
         $this->publishes([
             __DIR__ . '/../database/migrations/' => database_path('migrations'),
         ], 'cms.migrations');
@@ -44,5 +45,18 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/../public' => public_path('vendor/cms'),
         ], 'cms.public');
+
+        $this->publishes([
+            __DIR__ . '/../lang/fa' => lang_path('fa'),
+        ], 'cms.lang');
+
+        $this->publishes([
+            __DIR__ . '/../database/migrations/'   => database_path('migrations'),
+            __DIR__ . '/../database/seeders/'      => database_path('seeders'),
+            __DIR__ . '/../config/config.php'      => config_path('cms.php'),
+            __DIR__ . '/../config/permissions.php' => config_path('permissions.php'),
+            __DIR__ . '/../public'                 => public_path('vendor/cms'),
+            __DIR__ . '/../lang/fa'                => lang_path('fa'),
+        ], 'cms.all');
     }
 }
