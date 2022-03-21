@@ -31,10 +31,10 @@ class ServiceProvider extends BaseServiceProvider
 
         // Publish.
         $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+            __DIR__ . '/../database/migrations' => database_path('migrations'),
         ], 'cms.migrations');
         $this->publishes([
-            __DIR__ . '/../database/seeders/' => database_path('seeders'),
+            __DIR__ . '/../database/seeders' => database_path('seeders'),
         ], 'cms.seeders');
 
         $this->publishes([
@@ -51,12 +51,25 @@ class ServiceProvider extends BaseServiceProvider
         ], 'cms.lang');
 
         $this->publishes([
+            __DIR__ . '/../views' => resource_path('views/vendor/cms'),
+        ], 'cms.views');
+
+        $this->publishes([
             __DIR__ . '/../database/migrations/'   => database_path('migrations'),
             __DIR__ . '/../database/seeders/'      => database_path('seeders'),
             __DIR__ . '/../config/config.php'      => config_path('cms.php'),
             __DIR__ . '/../config/permissions.php' => config_path('permissions.php'),
             __DIR__ . '/../public'                 => public_path('vendor/cms'),
             __DIR__ . '/../lang/fa'                => lang_path('fa'),
+            __DIR__ . '/../views'                  => resource_path('views/vendor/cms'),
         ], 'cms.all');
+
+        $this->publishes([
+            __DIR__ . '/../database/migrations/'   => database_path('migrations'),
+            __DIR__ . '/../database/seeders/'      => database_path('seeders'),
+            __DIR__ . '/../config/config.php'      => config_path('cms.php'),
+            __DIR__ . '/../public'                 => public_path('vendor/cms'),
+            __DIR__ . '/../lang/fa'                => lang_path('fa'),
+        ], 'cms.common');
     }
 }
