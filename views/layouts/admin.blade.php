@@ -32,10 +32,10 @@
                             </a>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('admin.books.index') }}">کتاب‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.authors.index') }}">نویسنده‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.comments.index') }}">دیدگاه‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.quotes.index') }}">نقل‌قول‌ها</a>
+                                <a class="dropdown-item" href="">کتاب‌ها</a>
+                                <a class="dropdown-item" href="">نویسنده‌ها</a>
+                                <a class="dropdown-item" href="">دیدگاه‌ها</a>
+                                <a class="dropdown-item" href="">نقل‌قول‌ها</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button"
@@ -45,11 +45,11 @@
                             </a>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('admin.attributes.index') }}">مشخصه‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.categories.index') }}">دسته‌بندی</a>
-                                <a class="dropdown-item" href="{{ route('admin.tags.index') }}">برچسب‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.subscriptions.index') }}">خبرنامه</a>
-                                <a class="dropdown-item" href="{{ route('admin.files.index') }}">فایل‌ها</a>
+                                <a class="dropdown-item" href="">مشخصه‌ها</a>
+                                <a class="dropdown-item" href="">دسته‌بندی</a>
+                                <a class="dropdown-item" href="">برچسب‌ها</a>
+                                <a class="dropdown-item" href="">خبرنامه</a>
+                                <a class="dropdown-item" href="">فایل‌ها</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -60,9 +60,9 @@
                             </a>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('admin.users.index') }}">کاربران</a>
-                                <a class="dropdown-item" href="{{ route('admin.roles.index') }}">نقش‌ها</a>
-                                <a class="dropdown-item" href="{{ route('admin.permissions.index') }}">مجوزها</a>
+                                <a class="dropdown-item" href="">کاربران</a>
+                                <a class="dropdown-item" href="">نقش‌ها</a>
+                                <a class="dropdown-item" href="">مجوزها</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -73,9 +73,9 @@
                             </a>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('admin.config.index') }}">تنظیمات</a>
-                                <a class="dropdown-item" href="{{ route('admin.activity_logs.index') }}">لاگ فعالیت کاربران</a>
-                                <a class="dropdown-item" href="{{ route('admin.system_logs.index') }}">لاگ سیستم</a>
+                                <a class="dropdown-item" href="">تنظیمات</a>
+                                <a class="dropdown-item" href="">لاگ فعالیت کاربران</a>
+                                <a class="dropdown-item" href="">لاگ سیستم</a>
                             </div>
                         </li>
                     </ul>
@@ -92,12 +92,12 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfileDropdown">
-                                <a class="dropdown-item" href="{{ route('auth.logout') }}">خروج</a>
+                                <a class="dropdown-item" href="">خروج</a>
                             </div>
                         </li>
                         @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('auth.show_login_form') }}">ورود</a>
+                            <a class="nav-link" href="">ورود</a>
                         </li>
                         @endif
                     </ul>

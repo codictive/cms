@@ -9,5 +9,5 @@ $cfg = [
 ];
 
 Route::group($cfg, function () {
-    Route::get('/', 'DashboardController@index')->name('admin.dashboard');
+    Route::get('/', 'DashboardController@dashboard')->name('admin.dashboard');
 });

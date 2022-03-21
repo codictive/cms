@@ -8,5 +8,5 @@ $cfg = [
 ];
 
 Route::group($cfg, function () {
-    Route::get('/', 'DashboardController@index')->name('app.index');
+    Route::get('/', 'AppController@index')->name('app.index');
 });
