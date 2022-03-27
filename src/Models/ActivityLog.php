@@ -10,12 +10,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityLog extends Model
 {
-    public const ACTION_REGISTER = 'auth.register',
-        ACTION_LOGIN             = 'auth.login',
-        ACTION_LOGOUT            = 'auth.logout',
-        ACTION_RESET_PASSWORD    = 'auth.reset_password';
+    public const ACTION_FAVORITE_BOOK = 'book.favorite',
+        ACTION_DOWNLOAD_BOOK          = 'book.download',
+        ACTION_LIKE_COMMENT           = 'comment.like',
+        ACTION_DISLIKE_COMMENT        = 'comment.dislike',
+        ACTION_LIKE_QUOTE             = 'quote.like',
+        ACTION_DISLIKE_QUOTE          = 'quote.dislike',
+        ACTION_REGISTER               = 'auth.register',
+        ACTION_LOGIN                  = 'auth.login',
+        ACTION_LOGOUT                 = 'auth.logout',
+        ACTION_RESET_PASSWORD         = 'auth.reset_password',
+        ACTION_RATE                   = 'rate';
 
     public const ACTIONS = [
+        ActivityLog::ACTION_FAVORITE_BOOK,
+        ActivityLog::ACTION_DOWNLOAD_BOOK,
+        ActivityLog::ACTION_LIKE_COMMENT,
+        ActivityLog::ACTION_DISLIKE_COMMENT,
+        ActivityLog::ACTION_LIKE_QUOTE,
+        ActivityLog::ACTION_DISLIKE_QUOTE,
         ActivityLog::ACTION_REGISTER,
         ActivityLog::ACTION_LOGIN,
         ActivityLog::ACTION_LOGOUT,

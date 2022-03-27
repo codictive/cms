@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class File extends Model
 {
+    public const STORAGE_DIR = STATIC_DIR . '/files';
+
     protected $fillable = ['user_id', 'related_type', 'related_id', 'filename', 'caption', 'context', 'kind', 'mimetype', 'size', 'description'];
 
     public function user(): BelongsTo
