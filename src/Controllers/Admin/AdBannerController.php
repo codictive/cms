@@ -21,7 +21,7 @@ class AdBannerController extends Controller
     {
         $banners = AdBanner::all();
 
-        return view('admin.banners.index', ['banners' => $banners]);
+        return view('cms::admin.banners.index', ['banners' => $banners]);
     }
 
     /**
@@ -31,7 +31,7 @@ class AdBannerController extends Controller
      */
     public function create()
     {
-        return view('admin.banners.create');
+        return view('cms::admin.banners.create');
     }
 
     /**
@@ -72,7 +72,7 @@ class AdBannerController extends Controller
      */
     public function edit(AdBanner $banner)
     {
-        return view('admin.banners.edit', ['banner' => $banner]);
+        return view('cms::admin.banners.edit', ['banner' => $banner]);
     }
 
     /**

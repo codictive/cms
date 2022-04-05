@@ -23,7 +23,6 @@ class CreateArticleTagsTable extends Migration
             $table->foreign('tag_id')->references('id')->on('tags')->cascadeOnDelete();
         });
 
-        tableComment('article_tags', 'برچسب‌های مقالات');
     }
 
     /**

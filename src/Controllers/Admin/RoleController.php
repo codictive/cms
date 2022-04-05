@@ -20,7 +20,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return view('admin.roles.index', ['roles' => Role::get()]);
+        return view('cms::admin.roles.index', ['roles' => Role::get()]);
     }
 
     /**
@@ -30,7 +30,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('admin.roles.create');
+        return view('cms::admin.roles.create');
     }
 
     /**
@@ -59,7 +59,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        return view('admin.roles.edit', ['role' => $role]);
+        return view('cms::admin.roles.edit', ['role' => $role]);
     }
 
     /**
@@ -105,7 +105,7 @@ class RoleController extends Controller
         $roles       = Role::all();
         $permissions = Permission::orderBy('slug')->get();
 
-        return view('admin.roles.permissions', ['role' => $role, 'roles' => $roles, 'permissions' => $permissions]);
+        return view('cms::admin.roles.permissions', ['role' => $role, 'roles' => $roles, 'permissions' => $permissions]);
     }
 
     /**

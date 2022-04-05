@@ -2,11 +2,11 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Codictive\Cms\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Codictive\Cms\Models\Permission;
 use Codictive\Cms\Traits\RequiresUser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Codictive\Cms\Controllers\Controller;
 
 class PermissionController extends Controller
@@ -23,7 +23,7 @@ class PermissionController extends Controller
         $roles       = Role::with('permissions')->get();
         $permissions = Permission::orderBy('slug')->get();
 
-        return view('admin.permissions', ['roles' => $roles, 'permissions' => $permissions]);
+        return view('cms::admin.permissions', ['roles' => $roles, 'permissions' => $permissions]);
     }
 
     /**

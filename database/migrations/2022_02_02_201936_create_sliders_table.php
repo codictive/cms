@@ -20,7 +20,6 @@ class CreateSlidersTable extends Migration
             $table->timestamps();
         });
 
-        tableComment('sliders', 'اسلایدرها');
     }
 
     /**

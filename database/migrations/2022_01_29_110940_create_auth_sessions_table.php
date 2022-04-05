@@ -14,7 +14,8 @@ class CreateAuthSessionsTable extends Migration
         Schema::create('auth_sessions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('email');
+            $table->string('mobile')->nullable();
+            $table->string('email')->nullable();
             $table->string('token')->unique();
             $table->string('ip')->nullable();
             $table->timestamp('last_seen_at')->useCurrent();

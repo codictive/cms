@@ -2,11 +2,10 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Models\Ticket;
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Events\TicketCreatedEvent;
+use Codictive\Cms\Models\Ticket;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class TicketController extends Controller
@@ -21,11 +20,17 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $tickets = Ticket::with([]);
-        if ($request->query('query')) {
-            $tickets = $tickets->where('subject', 'LIKE', "%{$request->query('query')}%");
+        if ($request->query('id')) {
+            $tickets = $tickets->where('id', $request->query('id'));
         }
-        if ($request->query('Department')) {
-            $tickets = $tickets->where('Department', "{$request->query('Department')}");
+        if ($request->query('user_id')) {
+            $tickets = $tickets->where('user_id', $request->query('user_id'));
+        }
+        if ($request->query('subject')) {
+            $tickets = $tickets->where('subject', 'LIKE', "%{$request->query('subject')}%");
+        }
+        if ($request->query('department')) {
+            $tickets = $tickets->where('department', "{$request->query('department')}");
         }
         if ($request->query('priority')) {
             $tickets = $tickets->where('priority', "{$request->query('priority')}");
@@ -34,12 +39,15 @@ class TicketController extends Controller
             $tickets = $tickets->where('status', "{$request->query('status')}");
         }
 
-        $perPage  = (int) $request->query('per_page') ?? 30;
-        $orderBy  = $request->query('order_by')       ?? 'tickets.id';
-        $orderDir = $request->query('order_dir')      ?? 'DESC';
-        $tickets  = $tickets->orderBy($orderBy, $orderDir)->paginate($perPage);
+        $perPage     = (int) $request->query('per_page') ?? 30;
+        $orderBy     = $request->query('order_by')       ?? 'id';
+        $orderDir    = $request->query('order_dir')      ?? 'DESC';
+        $tickets     = $tickets->orderBy($orderBy, $orderDir)->paginate($perPage);
+        $departments = Ticket::DEPARTMENT;
+        $priority    = Ticket::PRIORITY;
+        $status      = Ticket::STATUS;
 
-        return view('admin.tickets.index', ['tickets' => $tickets]);
+        return view('cms::admin.tickets.index', ['tickets' => $tickets, 'departments' => $departments, 'priority' => $priority, 'status' => $status]);
     }
 
     /**
@@ -49,12 +57,12 @@ class TicketController extends Controller
      */
     public function create()
     {
-        $departments = [Ticket::DEPARTEMAN_MANAGEMENT, Ticket::DEPARTEMAN_SUPPORT, Ticket::DEPARTEMAN_FEEDBACK];
-        $priority    = [Ticket::PRIORITY_LOW, Ticket::PRIORITY_NORMAL, Ticket::PRIORITY_HIGH];
-        $status      = [Ticket::STATUS_PENDING, Ticket::STATUS_ANSWERED, Ticket::STATUS_CLOSED];
+        $departments = Ticket::DEPARTMENT;
+        $priority    = Ticket::PRIORITY;
+        $status      = Ticket::STATUS;
         $data        = ['departments' => $departments, 'priority' => $priority, 'status' => $status];
 
-        return view('admin.tickets.create', $data);
+        return view('cms::admin.tickets.create', $data);
     }
 
     /**
@@ -67,12 +75,11 @@ class TicketController extends Controller
         $request->validate([
             'user_id'    => 'required|exists:users,id',
             'subject'    => 'required',
-            'department' => ['required', Rule::in([Ticket::DEPARTEMAN_MANAGEMENT, Ticket::DEPARTEMAN_SUPPORT, Ticket::DEPARTEMAN_FEEDBACK])],
-            'priority'   => ['required', Rule::in([Ticket::PRIORITY_LOW, Ticket::PRIORITY_NORMAL, Ticket::PRIORITY_HIGH])],
-            'status'     => ['required', Rule::in([Ticket::STATUS_PENDING, Ticket::STATUS_ANSWERED, Ticket::STATUS_CLOSED])],
+            'department' => ['required', Rule::in(Ticket::DEPARTMENT)],
+            'priority'   => ['required', Rule::in(Ticket::PRIORITY)],
+            'status'     => ['required', Rule::in(Ticket::STATUS)],
         ]);
         $ticket = Ticket::create($request->all());
-
 
         return redirect()->route('admin.tickets.index')->with('success', "تیکت با موضوع '{$ticket->subject}' ایجاد شد.");
     }
@@ -84,12 +91,12 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        $departments = [Ticket::DEPARTEMAN_MANAGEMENT, Ticket::DEPARTEMAN_SUPPORT, Ticket::DEPARTEMAN_FEEDBACK];
-        $priority    = [Ticket::PRIORITY_LOW, Ticket::PRIORITY_NORMAL, Ticket::PRIORITY_HIGH];
-        $status      = [Ticket::STATUS_PENDING, Ticket::STATUS_ANSWERED, Ticket::STATUS_CLOSED];
+        $departments = Ticket::DEPARTMENT;
+        $priority    = Ticket::PRIORITY;
+        $status      = Ticket::STATUS;
         $data        = ['departments' => $departments, 'priority' => $priority, 'status' => $status, 'ticket' => $ticket];
 
-        return view('admin.tickets.edit', $data);
+        return view('cms::admin.tickets.edit', $data);
     }
 
     /**
@@ -101,9 +108,9 @@ class TicketController extends Controller
     {
         $request->validate([
             'subject'    => 'required',
-            'department' => 'required',
-            'priority'   => ['required', Rule::in([Ticket::PRIORITY_LOW, Ticket::PRIORITY_NORMAL, Ticket::PRIORITY_HIGH])],
-            'status'     => ['required', Rule::in([Ticket::STATUS_PENDING, Ticket::STATUS_ANSWERED, Ticket::STATUS_CLOSED])],
+            'department' => ['required', Rule::in(Ticket::DEPARTMENT)],
+            'priority'   => ['required', Rule::in(Ticket::PRIORITY)],
+            'status'     => ['required', Rule::in(Ticket::STATUS)],
         ]);
         $ticket->update($request->all());
 
@@ -120,5 +127,35 @@ class TicketController extends Controller
         $ticket->delete();
 
         return redirect()->route('admin.tickets.index')->with('warning', "تیکت با موضوع '{$ticket->subject}' حذف شد.");
+    }
+
+    public function batch(Request $request)
+    {
+        $ticketIds    = $request->batch;
+        $status       = Ticket::STATUS;
+        if (! $ticketIds) {
+            return redirect()->route('admin.tickets.index')->withErrors('تیکت مورد نظر را انتخاب کنید.');
+        }
+
+        switch ($request->input('action')) {
+            case 'status':
+                return view('cms::admin.tickets.batch', ['action' => 'status', 'status' => $status, 'ticketIds' => $ticketIds]);
+
+                break;
+
+            //proccess batch update
+
+            case 'store_status':
+                Ticket::whereIn('id', $ticketIds)->update(['status' => $request->input('status')]);
+
+                break;
+
+            case 'delete':
+                Ticket::whereIn('id', $ticketIds)->delete();
+
+                break;
+        }
+
+        return redirect()->route('admin.tickets.index')->with('info', 'عملیات انجام شد.');
     }
 }

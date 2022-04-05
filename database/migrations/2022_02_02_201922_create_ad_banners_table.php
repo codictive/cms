@@ -24,7 +24,6 @@ class CreateAdBannersTable extends Migration
             $table->timestamps();
         });
 
-        tableComment('ad_banners', 'بنرهای تبلیغاتی');
     }
 
     /**

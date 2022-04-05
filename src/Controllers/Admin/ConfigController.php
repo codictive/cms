@@ -2,14 +2,14 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Codictive\Cms\Models\Menu;
 use Codictive\Cms\Models\Role;
 use Codictive\Cms\Models\Slider;
 use Codictive\Cms\Models\AdBanner;
 use Codictive\Cms\Traits\RequiresUser;
-use Illuminate\Http\Request;
-use Codictive\Cms\Models\ArticleCategory;
 use Codictive\Cms\Controllers\Controller;
+use Codictive\Cms\Models\ArticleCategory;
 
 class ConfigController extends Controller
 {
@@ -23,7 +23,7 @@ class ConfigController extends Controller
         $menus             = Menu::all();
         $articleCategories = ArticleCategory::all();
 
-        return view('admin.config', [
+        return view('cms::admin.config', [
             'sliders'           => $sliders,
             'roles'             => $roles,
             'adBanners'         => $adBanners,

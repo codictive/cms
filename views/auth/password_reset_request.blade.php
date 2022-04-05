@@ -1,61 +1,42 @@
-@extends('layouts.auth')
+@extends('cms::layouts.auth')
 
 @section('title', title('بازیابی گذرواژه'))
 
 @section('content')
-<div class="mobile-header">
-    <a href="/">
-        <img src="/static/img/{{ kv('site.logo_small') }}">
-    </a>
-</div>
-<div class="login-content">
-    <header class="login-header">
-        <h1>بازیابی رمز عبور</h1>
-        <a href="/">
-            <img src="/static/img/{{ kv('site.logo_small') }}">
-        </a>
-    </header>
-    <span id="loader-signin" style="display: none;">
-        <span class="loader-inner ball-pulse">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-    </span>
-    <form method="post" action="{{ route('auth.password_reset_request') }}">
-        @csrf
-        <section id="enter-mobile">
-            <div class="login-box">
-                <div class="login-box-title">
-                    <div class="entered-phone-wrapper">
-                        <span class="entered-phone-label"></span>
-                    </div>
-                </div>
-                <div class="login-box-input">
-                    <label for="mobile">شماره موبایل:</label>
-                    <input type="tel" id="mobile" name="mobile" value="{{ old('mobile') }}" maxlength="11" minlength="11" autofocus required>
-                </div>
-                <div class="g-recaptcha mb-3" data-sitekey="{{ kv('keys.recaptcha.site_key') }}"
-                    style="direction:ltr;"></div>
-                <div class="login-box-cta">
-                    <button id="enter-mobile-cta" type="submit">
-                        ادامــه
-                    </button>
-                </div>
-                <div class="login-footer">
-                    <div id="cp-section">
-                        <div class="cp-box-info">
-                            <p id="cp-message">
-                                ورود شما به معنای موافقت با <a href="/pages/terms" target="_blank">قوانین {{ appName() }}</a>
-                                است.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('auth.show_login_form') }}">ورود</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('auth.show_password_login_form') }}">ورود با گذرواژه</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ route('auth.show_password_reset_request_form') }}">بازیابی گذرواژه</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{{ route('auth.password_reset_request') }}" id="passwordResetForm">
+            @csrf
+            <div class="form-group">
+                <label for="mobile">تلفن همراه</label>
+                <input type="number" class="form-control" id="mobile" name="mobile" placeholder="09123456789" required autofocus>
             </div>
-        </section>
-    </form>
+            <button class="g-recaptcha btn btn-success"
+                data-sitekey="{{ kv('keys.recaptcha.site_key') }}"
+                data-callback='onSubmit'
+                data-action='submit'>ادامه</button>
+        </form>
+    </div>
 </div>
+@endsection
 
-<br /><br /><br /><br /><br />
+@section('scripts')
+<script>
+    function onSubmit() {
+        $('#passwordResetForm').trigger('submit');
+    }
+</script>
 @endsection

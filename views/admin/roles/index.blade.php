@@ -1,15 +1,25 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title('مدیریت نقش‌ها'))
 
 @section('content')
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">پنل مدیریت</a></li>
-    <li class="breadcrumb-item active" aria-current="page">نقش‌های کاربری</li>
-  </ol>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="navbar-collapse" id="navbarSupportedContent">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">پنل مدیریت</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">مدیریت نقش‌ها</li>
+                </ol>
+            </nav>
+            <div class="mx-2">
+                <a class="btn btn-primary" style="width: 90px;" href="{{ route('admin.roles.create') }}">
+                    <i class="fas fa-add"></i>ایجاد
+                </a>
+            </div>
+        </div>
+    </div>
 </nav>
-<a class="btn btn-outline-primary" href="{{ route('admin.roles.create') }}">ایجاد</a>
 <div class="table-responsive">
     <table class="table table-hover my-4">
         <thead>

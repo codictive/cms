@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AuthSession extends Model
 {
-    protected $fillable = ['user_id', 'email', 'token', 'ip'];
+    protected $fillable = ['user_id', 'mobile', 'email', 'token', 'ip'];
     protected $casts    = ['last_seen_at' => 'datetime'];
 
     /**

@@ -2,10 +2,10 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Models\Slider;
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Codictive\Cms\Models\Slider;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class SliderController extends Controller
@@ -21,7 +21,7 @@ class SliderController extends Controller
     {
         $sliders = Slider::all();
 
-        return view('admin.sliders.index', ['sliders' => $sliders]);
+        return view('cms::admin.sliders.index', ['sliders' => $sliders]);
     }
 
     /**
@@ -31,7 +31,7 @@ class SliderController extends Controller
      */
     public function create()
     {
-        return view('admin.sliders.create');
+        return view('cms::admin.sliders.create');
     }
 
     /**
@@ -62,7 +62,7 @@ class SliderController extends Controller
     {
         $items = $slider->items()->orderBy('weight')->get();
 
-        return view('admin.sliders.show', ['slider' => $slider, 'items' => $items]);
+        return view('cms::admin.sliders.show', ['slider' => $slider, 'items' => $items]);
     }
 
     /**
@@ -74,7 +74,7 @@ class SliderController extends Controller
      */
     public function edit(Slider $slider)
     {
-        return view('admin.sliders.edit', ['slider' => $slider]);
+        return view('cms::admin.sliders.edit', ['slider' => $slider]);
     }
 
     /**

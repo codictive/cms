@@ -19,7 +19,7 @@ class SliderItemController extends Controller
      */
     public function create(Slider $slider)
     {
-        return view('admin.sliders.items.create', ['slider' => $slider]);
+        return view('cms::admin.sliders.items.create', ['slider' => $slider]);
     }
 
     /**
@@ -55,7 +55,7 @@ class SliderItemController extends Controller
      */
     public function edit(Slider $slider, SliderItem $item)
     {
-        return view('admin.sliders.items.edit', ['slider' => $slider, 'item' => $item]);
+        return view('cms::admin.sliders.items.edit', ['slider' => $slider, 'item' => $item]);
     }
 
     /**

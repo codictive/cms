@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title($conversation->ticket->user->name))
 

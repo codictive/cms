@@ -1,15 +1,21 @@
 <?php
 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Codictive\Cms\Models\Tag;
+use Codictive\Cms\Models\Menu;
+use Codictive\Cms\Models\Role;
 use Codictive\Cms\Models\User;
 use Illuminate\Http\UploadedFile;
 use Codictive\Cms\Models\KeyValue;
 use Codictive\Cms\Models\SystemLog;
 use Codictive\Cms\Models\AuthSession;
 
+require_once 'constants.php';
 require_once 'thumbnail.php';
+require_once 'sms.php';
+require_once 'fmt.php';
 
 function kv(string $key, mixed $val = null): mixed
 {
@@ -120,4 +126,90 @@ function findOrCreateTag($name, $slug = null): Tag
     }
 
     return $tag;
+}
+
+/**
+ * Renders bootstrap 4 nav component for given Menu slug.
+ *
+ * @param string $slug
+ * @param string $class
+ *
+ * @return view
+ */
+function renderMenu($slug, $class = 'nav')
+{
+    $menu = Menu::where('slug', $slug)->first();
+    if (! $menu) {
+        return '';
+    }
+
+    $topLevelItems = $menu->items()->where('parent_id', null)->orderBy('weight')->get();
+    if (! $topLevelItems) {
+        return '';
+    }
+
+    $path  = '/' . request()->path();
+    $items = [];
+    foreach ($topLevelItems as $i => $t) {
+        $items[$i] = [
+            'title'  => $t->title,
+            'path'   => $t->path,
+            'active' => $t->path == $path,
+            'childs' => [],
+        ];
+
+        $childs = $t->childs();
+        foreach ($childs as $c) {
+            $items[$i]['childs'][] = [
+                'title'  => $c->title,
+                'path'   => $c->path,
+                'active' => $c->path == $path,
+            ];
+            if ($c->path == $path) {
+                $items[$i]['active'] = true;
+            }
+        }
+    }
+
+    return view('cms::partials.menu', ['class' => $class, 'items' => $items]);
+}
+
+/**
+ * Returns guest role.
+ *
+ * @return \App\Role
+ */
+function guestRole()
+{
+    return Role::with(['permissions'])->where('slug', kv('auth.guest_role'))->first();
+}
+
+/**
+ * Converts unix timestamp to Carbon date.
+ *
+ * @param int $unixTime
+ */
+function unixToCarbon($unixTime): Carbon
+{
+    return Carbon::createFromTimestamp($unixTime);
+}
+
+/**
+ * Returns bootstrap breadcrumb for given category.
+ *
+ * @param object      $category
+ * @param string      $routeName
+ * @param string|null $firstItem
+ *
+ * @return string|view
+ */
+function renderCategoryBreadcrumb($category, $routeName, $firstItem = null)
+{
+    if (! $category) {
+        return '';
+    }
+
+    $categories = array_reverse(array_merge([$category], $category->parents()));
+
+    return view('cms::partials.category_breadcrumb', ['categories' => $categories, 'route_name' => $routeName, 'first_item' => $firstItem]);
 }

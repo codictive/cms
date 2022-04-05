@@ -2,6 +2,7 @@
 
 namespace Codictive\Cms\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -30,6 +31,11 @@ class User extends Authenticatable
     public static function byMobile(string $mobile, array $with = []): User | null
     {
         return User::with($with)->where('mobile', $mobile)->first();
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
     }
 
     public function sessions(): HasMany

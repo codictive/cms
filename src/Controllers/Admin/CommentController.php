@@ -2,9 +2,9 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Codictive\Cms\Models\Comment;
 use Codictive\Cms\Traits\RequiresUser;
-use Illuminate\Http\Request;
 use Codictive\Cms\Controllers\Controller;
 
 class CommentController extends Controller
@@ -16,11 +16,33 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $comments = Comment::orderBy('id', 'DESC')->paginate(30);
+        $comments = Comment::with(['user']);
+        if ($request->query('id')) {
+            $comments->where('id', $request->query('id'));
+        }
+        if ($request->query('user_id')) {
+            $comments->where('user_id', $request->query('user_id'));
+        }
+        if ($request->query('related_type')) {
+            $comments->where('related_type', "{$request->query('related_type')}");
+        }
+        if ($request->query('related_id')) {
+            $comments->where('related_id', $request->query('related_id'));
+        }
+        if ($request->query('is_approved') == 'true') {
+            $comments->where('is_approved', true);
+        }
+        if ($request->query('is_approved') == 'false') {
+            $comments->where('is_approved', false);
+        }
+        $perPage      = (int) $request->query('per_page') ?? 30;
+        $orderBy      = $request->query('order_by')       ?? 'id';
+        $orderDir     = $request->query('order_dir')      ?? 'DESC';
+        $comments     = $comments->orderBy($orderBy, $orderDir)->paginate($perPage);
 
-        return view('admin.comments.index', ['comments' => $comments]);
+        return view('cms::admin.comments.index', ['comments' => $comments]);
     }
 
     /**
@@ -30,7 +52,7 @@ class CommentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        return view('admin.comments.edit', ['comment' => $comment]);
+        return view('cms::admin.comments.edit', ['comment' => $comment]);
     }
 
     /**

@@ -2,14 +2,13 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use App\Traits\RequiresUser;
 use Illuminate\Http\Request;
 use Codictive\Cms\Models\Role;
 use Codictive\Cms\Models\User;
 use Illuminate\Validation\Rule;
-use App\Events\UserCreatedEvent;
 use Codictive\Cms\Models\Profile;
 use Illuminate\Support\Facades\Hash;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class UserController extends Controller
@@ -23,52 +22,51 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::withTrashed()->join('profiles', 'users.id', '=', 'profiles.user_id');
+        $users = User::with([])->join('profiles', 'users.id', '=', 'profiles.user_id');
         if ($request->query('id')) {
-            $users = $users->where('users.id', $request->query('id'));
+            $users->where('users.id', $request->query('id'));
         }
         if ($request->query('mobile')) {
-            $users = $users->where('mobile', 'LIKE', "%{$request->query('mobile')}%");
+            $users->where('mobile', 'LIKE', "%{$request->query('mobile')}%");
         }
         if ($request->query('email')) {
-            $users = $users->where('email', 'LIKE', "%{$request->query('email')}%");
+            $users->where('email', 'LIKE', "%{$request->query('email')}%");
         }
         if ($request->query('query')) {
-            $userIds = Profile::where('first_name', 'LIKE', "%{$request->query('query')}%")
-                ->orWhere('last_name', 'LIKE', "%{$request->query('query')}%")
+            $userIds = Profile::where('name', 'LIKE', "%{$request->query('query')}%")
                 ->pluck('user_id')->all();
-            $users = $users->whereIn('users.id', $userIds);
+            $users->whereIn('users.id', $userIds);
         }
         if ($request->query('national_code')) {
             $userIds = Profile::where('national_code', 'LIKE', "%{$request->query('national_code')}%")->pluck('user_id')->all();
-            $users   = $users->whereIn('users.id', $userIds);
+            $users->whereIn('users.id', $userIds);
         }
         if ($request->query('status')) {
             switch ($request->query('status')) {
                 case 'active':
-                    $users = $users->where('is_active', true);
+                    $users->where('is_active', true);
 
                     break;
 
                 case 'blocked':
-                    $users = $users->where('is_active', false);
+                    $users->where('is_active', false);
 
                     break;
 
                 case 'approved':
                     $userIds = Profile::where('is_approved', true)->pluck('user_id')->all();
-                    $users   = $users->whereIn('users.id', $userIds);
+                    $users->whereIn('users.id', $userIds);
 
                     break;
 
                 case 'not_approved':
                     $userIds = Profile::where('is_approved', false)->pluck('user_id')->all();
-                    $users   = $users->whereIn('users.id', $userIds);
+                    $users->whereIn('users.id', $userIds);
 
                     break;
 
                 case 'deleted':
-                    $users = $users->whereNotNull('deleted_at');
+                    $users->whereNotNull('deleted_at');
 
                     break;
             }
@@ -79,7 +77,7 @@ class UserController extends Controller
         $orderDir = $request->query('order_dir')      ?? 'DESC';
         $users    = $users->select(['profiles.name', 'users.*'])->orderBy($orderBy, $orderDir)->paginate($perPage);
 
-        return view('admin.users.index', ['users' => $users]);
+        return view('cms::admin.users.index', ['users' => $users]);
     }
 
     /**
@@ -91,7 +89,7 @@ class UserController extends Controller
     {
         $roles = Role::all();
 
-        return view('admin.users.create', ['roles' => $roles]);
+        return view('cms::admin.users.create', ['roles' => $roles]);
     }
 
     /**
@@ -114,7 +112,6 @@ class UserController extends Controller
             'email'             => $request->input('email'),
             'password'          => Hash::make($request->input('password')),
         ]);
-        UserCreatedEvent::dispatch($user, ['name' => $request->input('name')], $request->input('roles'));
 
         return redirect()->route('admin.users.index')->with('success', "کاربر {$user->name} ایجاد شد.");
     }
@@ -130,7 +127,7 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->findOrFail($id);
 
-        return view('admin.users.show', ['user' => $user]);
+        return view('cms::admin.users.show', ['user' => $user]);
     }
 
     /**
@@ -142,7 +139,7 @@ class UserController extends Controller
     {
         $roles = Role::all();
 
-        return view('admin.users.edit', ['user' => $user, 'roles' => $roles]);
+        return view('cms::admin.users.edit', ['user' => $user, 'roles' => $roles]);
     }
 
     /**
@@ -191,7 +188,7 @@ class UserController extends Controller
 
     public function editProfile(User $user)
     {
-        return view('admin.users.edit_profile', ['user' => $user]);
+        return view('cms::admin.users.edit_profile', ['user' => $user]);
     }
 
     public function updateProfile(Request $request, User $user)

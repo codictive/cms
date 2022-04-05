@@ -23,62 +23,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNavbarContent">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                محتوا
-                                <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">کتاب‌ها</a>
-                                <a class="dropdown-item" href="">نویسنده‌ها</a>
-                                <a class="dropdown-item" href="">دیدگاه‌ها</a>
-                                <a class="dropdown-item" href="">نقل‌قول‌ها</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                ساختار
-                                <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">مشخصه‌ها</a>
-                                <a class="dropdown-item" href="">دسته‌بندی</a>
-                                <a class="dropdown-item" href="">برچسب‌ها</a>
-                                <a class="dropdown-item" href="">خبرنامه</a>
-                                <a class="dropdown-item" href="">فایل‌ها</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                کاربران
-                                <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">کاربران</a>
-                                <a class="dropdown-item" href="">نقش‌ها</a>
-                                <a class="dropdown-item" href="">مجوزها</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                سیستم
-                                <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">تنظیمات</a>
-                                <a class="dropdown-item" href="">لاگ فعالیت کاربران</a>
-                                <a class="dropdown-item" href="">لاگ سیستم</a>
-                            </div>
-                        </li>
-                    </ul>
+                {!! renderMenu('admin_navigation', 'navbar-nav mr-auto') !!}
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="/">مشاهده سایت</a>
@@ -92,12 +37,12 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfileDropdown">
-                                <a class="dropdown-item" href="">خروج</a>
+                                <a class="dropdown-item" href="{{ route('auth.logout') }}">خروج</a>
                             </div>
                         </li>
                         @else
                         <li class="nav-item">
-                            <a class="nav-link" href="">ورود</a>
+                            <a class="nav-link" href="{{ route('auth.login') }}">ورود</a>
                         </li>
                         @endif
                     </ul>

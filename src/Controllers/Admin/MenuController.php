@@ -2,10 +2,10 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Models\Menu;
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
+use Codictive\Cms\Models\Menu;
 use Illuminate\Validation\Rule;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class MenuController extends Controller
@@ -21,7 +21,7 @@ class MenuController extends Controller
     {
         $menus = Menu::paginate(30);
 
-        return view('admin.menus.index', ['menus' => $menus]);
+        return view('cms::admin.menus.index', ['menus' => $menus]);
     }
 
     /**
@@ -31,7 +31,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        return view('admin.menus.create');
+        return view('cms::admin.menus.create');
     }
 
     /**
@@ -61,7 +61,7 @@ class MenuController extends Controller
     {
         $items = $menu->items()->orderBy('weight')->get();
 
-        return view('admin.menus.show', ['menu' => $menu, 'items' => $items]);
+        return view('cms::admin.menus.show', ['menu' => $menu, 'items' => $items]);
     }
 
     /**
@@ -73,7 +73,7 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        return view('admin.menus.edit', ['menu' => $menu]);
+        return view('cms::admin.menus.edit', ['menu' => $menu]);
     }
 
     /**

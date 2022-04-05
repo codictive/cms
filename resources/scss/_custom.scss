@@ -68,3 +68,7 @@ label.required::after {
     font-size: 20px;
     color: red;
 }
+
+.navbar-collapse {
+    justify-content: inherit !important;
+}

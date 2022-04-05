@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title('صفحات استاتیک'))
 
@@ -18,17 +18,6 @@
                     ایجاد
                 </a>
             </div>
-            <form class="d-flex ms-auto" action="" method="post">
-                <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button">
-                        <i class="fas fa-filter"></i>
-                    </button>
-                    <input type="text" class="form-control" placeholder="جستجو...">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </nav>

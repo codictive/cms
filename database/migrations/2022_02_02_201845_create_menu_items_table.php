@@ -27,7 +27,6 @@ class CreateMenuItemsTable extends Migration
             $table->foreign('parent_id')->references('id')->on('menu_items')->cascadeOnDelete();
         });
 
-        tableComment('menu_items', 'آیتم‌های منو');
     }
 
     /**

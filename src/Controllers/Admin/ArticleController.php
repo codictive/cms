@@ -2,12 +2,13 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Codictive\Cms\Models\Article;
 use Codictive\Cms\Traits\RequiresUser;
-use Illuminate\Http\Request;
-use Codictive\Cms\Models\ArticleCategory;
-use Illuminate\Validation\Rule;
 use Codictive\Cms\Controllers\Controller;
+use Codictive\Cms\Models\ArticleCategory;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
@@ -20,12 +21,22 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $articles = Article::orderBy('id', 'DESC')->paginate(30);
-        if ($request->query('query')) {
-            $articles = $articles->where('query', 'LIKE', "%{$request->query('query')}%");
+        $articles = Article::with([]);
+        if ($request->query('id')) {
+            $articles->where('id', $request->query('id'));
         }
+        if ($request->query('title')) {
+            $articles->where('title', 'LIKE', "%{$request->query('title')}%");
+        }
+        if ($request->query('status') == 'published') {
+            $articles->where('published', true);
+        }
+        if ($request->query('status') == 'unpublished') {
+            $articles->where('published', false);
+        }
+        $articles = $articles->orderBy($request->query('order_by') ?? 'id', $request->query('order_dir') ?? 'DESC')->paginate($request->query('pre_page'));
 
-        return view('admin.articles.index', ['articles' => $articles]);
+        return view('cms::admin.articles.index', ['articles' => $articles]);
     }
 
     /**
@@ -37,7 +48,7 @@ class ArticleController extends Controller
     {
         $categories = ArticleCategory::where('parent_id', null)->orderBy('weight')->orderBy('name')->get();
 
-        return view('admin.articles.create', ['categories' => $categories]);
+        return view('cms::admin.articles.create', ['categories' => $categories]);
     }
 
     /**
@@ -91,7 +102,7 @@ class ArticleController extends Controller
     {
         $categories = ArticleCategory::where('parent_id', null)->orderBy('weight')->orderBy('name')->get();
 
-        return view('admin.articles.edit', ['article' => $article, 'categories' => $categories]);
+        return view('cms::admin.articles.edit', ['article' => $article, 'categories' => $categories]);
     }
 
     /**
@@ -152,5 +163,53 @@ class ArticleController extends Controller
         $article->purge();
 
         return redirect()->route('admin.articles.index')->with('warning', "مقاله {$article->title} حذف شد.");
+    }
+
+    public function batch(Request $request)
+    {
+        $categories    = ArticleCategory::get();
+        $articleIds    = $request->batch;
+        if (! $articleIds) {
+            return redirect()->route('admin.articles.index')->withErrors('مقاله مورد نظر را انتخاب کنید.');
+        }
+
+        switch ($request->input('action')) {
+            case 'category':
+                return view('cms::admin.articles.batch', ['action' => 'category', 'categories' => $categories, 'articleIds' => $articleIds]);
+
+                break;
+
+            case 'published':
+                return view('cms::admin.articles.batch', ['action' => 'published', 'articleIds' => $articleIds]);
+
+                break;
+
+            //proccess batch update
+            case 'store_category':
+                $validator = Validator::make($request->all(), ['category' => 'required']);
+                if ($validator->fails()) {
+                    return redirect()->route('admin.articles.index')->withErrors($validator);
+                }
+
+                $articles = Article::whereIn('id', $articleIds)->get();
+                foreach ($articles as $b) {
+                    $b->article_category_id = $request->input('category');
+                    $b->save();
+                }
+
+                break;
+
+            case 'store_publishe':
+                Article::whereIn('id', $articleIds)->update(['published' => $request->has('published')]);
+
+                break;
+
+            case 'delete':
+                Article::whereIn('id', $articleIds)->delete();
+
+                break;
+        }
+
+        return redirect()->route('admin.articles.index')->with('info', 'عملیات انجام شد.');
     }
 }

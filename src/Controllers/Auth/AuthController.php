@@ -10,6 +10,7 @@ use Codictive\Cms\Models\SystemLog;
 use Illuminate\Support\Facades\Hash;
 use Codictive\Cms\Models\AuthSession;
 use Codictive\Cms\Controllers\Controller;
+use Codictive\Cms\Models\VerificationCode;
 
 class AuthController extends Controller
 {
@@ -20,96 +21,220 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
-        if (! validateRecaptcha((string) $request->input('g-recaptcha-response'))) {
+        $request->validate(['mobile' => 'required|numeric|digits:11|starts_with:09']);
+        if (! validateRecaptcha($request->input('g-recaptcha-response'))) {
             return redirect()->route('auth.show_login_form')->withErrors('اعتبارسنجی امنیتی تکمیل نشده است.');
         }
 
-        $email = $request->input('email');
-        if (! $email) {
-            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده نامعتبر است.');
-        }
-
-        $user = User::byEmail($email);
+        $mobile = $request->input('mobile');
+        $user   = User::byMobile($mobile);
         if (! $user) {
-            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده نامعتبر است.');
+            $user        = User::create(['mobile' => $mobile, 'register_mobile' => $mobile]);
+            $defaultRole = Role::where('slug', kv('auth.default_role'))->first();
+            if ($defaultRole) {
+                $user->roles()->attach($defaultRole->id);
+            }
+            $user->is_active = true;
         }
-        if (! Hash::check($request->input('password'), $user->password)) {
-            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده نامعتبر است.');
+        if (! $user) {
+            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده صحیح نیست.');
         }
         if (! $user->is_active) {
             return redirect()->route('auth.show_login_form')->withErrors('حساب شما مسدود است.');
         }
-        if (! $user->is_verified) {
-            return redirect()->route('auth.show_login_form')->withErrors('شما ایمیل خود را تائید نکرده‌اید.');
-        }
 
-        // create new session.
-        $token = Uuid::uuid4()->toString();
-        AuthSession::create([
-            'user_id'    => $user->id,
-            'email'      => $user->email,
-            'token'      => $token,
-            'ip'         => $request->ip(),
-        ]);
-        $request->session()->put('auth_token', $token);
-        SystemLog::info('AuthController.login', 'User %d (%s) logged in.', $user->id, $user->email);
+        VerificationCode::saveAndSend($mobile, VerificationCode::CONTEXT_LOGIN);
+        $request->session()->put(AUTH_SESSION_MOBILE_KEY, $mobile);
 
-        if ($next = session()->pull('next')) {
-            return redirect($next)->with('success', "{$user->name} خوش آمدید!");
-        }
-
-        return redirect()->route('admin.dashboard')->with('success', "{$user->name} خوش آمدید!");
+        return redirect()->route('auth.show_verification_form');
     }
 
-    public function showRegisterForm()
+    public function showVerificationForm(Request $request)
     {
-        return view('cms::auth.register');
+        $mobile = $request->session()->get(AUTH_SESSION_MOBILE_KEY);
+        $user   = User::byMobile($mobile);
+
+        return view('cms::auth.verify', ['user' => $user]);
     }
 
-    public function register(Request $request)
+    public function verify(Request $request)
     {
         $request->validate([
-            'name'     => 'required',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|confirmed',
+            'code'     => 'required|numeric|digits:5',
+            'name'     => 'nullable',
+            'email'    => 'nullable|email',
+            'password' => 'nullable|confirmed',
         ]);
-        if (! validateRecaptcha($request->input('g-recaptcha-response'))) {
-            return redirect()->route('auth.show_register_form')->withErrors('اعتبارسنجی امنیتی تکمیل نشده است.');
+        $mobile = $request->session()->get(AUTH_SESSION_MOBILE_KEY);
+        if (! $mobile) {
+            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده نامعتبر است.');
         }
 
-        $user = User::create([
-            'name'     => $request->input('name'),
-            'mobile'   => $request->input('mobile'),
-            'email'    => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-        ]);
-        $r = Role::default();
-        if ($r) {
-            $user->roles()->attach($r);
+        if (! VerificationCode::check($mobile, $request->input('code'), VerificationCode::CONTEXT_LOGIN)) {
+            return redirect()->route('auth.show_verification_form')->withErrors('کد وارد شده نامعتبر است.');
         }
 
-        // TODO: send email with activation token.
+        // make sure user exists and is active.
+        $user = User::byMobile($mobile);
+        if ($request->input('name')) {
+            $user->update(['name' => $request->input('name')]);
+        }
+        if ($request->input('email')) {
+            $user->update(['email' => $request->input('email')]);
+        }
+        if ($request->input('password')) {
+            $user->update(['password' => Hash::make($request->input('email'))]);
+        }
+        if (! $user) {
+            return redirect()->route('auth.show_login_form')->withErrors('اطلاعات وارد شده صحیح نیست.');
+        }
+        if (! $user->is_active) {
+            return redirect()->route('auth.show_login_form')->withErrors('حساب شما مسدود است.');
+        }
 
         // create new session.
         $token = Uuid::uuid4()->toString();
         AuthSession::create([
             'user_id'    => $user->id,
-            'email'      => $user->email,
+            'mobile'     => $user->mobile,
             'token'      => $token,
-            'ip'         => $request->ip(),
+            'platform'   => 'web',
+            'expires_at' => now()->addDays((int) kv('auth.session.expire_days')),
         ]);
-        $request->session()->put('auth_token', $token);
-        SystemLog::info('AuthController.register', 'User %d (%s) registered.', $user->id, $user->email);
+        $request->session()->put(AUTH_SESSION_TOKEN_KEY, $token);
+        SystemLog::info('[Controllers.Auth.AuthController.verify] User %d (%s) logged in.', $user->id, $user->mobile);
 
         if ($next = session()->pull('next')) {
             return redirect($next)->with('success', "{$user->name} خوش آمدید!");
         }
 
         return redirect()->route('admin.dashboard')->with('success', "{$user->name} خوش آمدید!");
+    }
+
+    public function showPasswordLoginForm()
+    {
+        return view('cms::auth.password_login');
+    }
+
+    public function passwordLogin(Request $request)
+    {
+        $request->validate([
+            'mobile'   => 'required|numeric|digits:11|starts_with:09',
+            'password' => 'required',
+        ]);
+        if (! validateRecaptcha($request->input('g-recaptcha-response'))) {
+            return redirect()->route('auth.show_password_login_form')->withErrors('اعتبارسنجی امنیتی تکمیل نشده است.');
+        }
+
+        $mobile   = $request->input('mobile');
+        $password = $request->input('password');
+        // make sure user exists and is active.
+        $user = User::byMobile($mobile);
+        if (! $user) {
+            return redirect()->route('auth.show_password_login_form')->withErrors('اطلاعات وارد شده صحیح نیست.');
+        }
+        if (! $user->is_active) {
+            return redirect()->route('auth.show_password_login_form')->withErrors('حساب شما مسدود است.');
+        }
+        if (! Hash::check($password, $user->password)) {
+            return redirect()->route('auth.show_password_login_form')->withErrors('گذرواژه وارد شده صحیح نیست.');
+        }
+
+        // create new session.
+        $token = Uuid::uuid4()->toString();
+        AuthSession::create([
+            'user_id'    => $user->id,
+            'mobile'     => $user->mobile,
+            'token'      => $token,
+            'platform'   => 'web',
+            'expires_at' => now()->addDays((int) kv('auth.session.expire_days')),
+        ]);
+        $request->session()->put(AUTH_SESSION_TOKEN_KEY, $token);
+        SystemLog::info('[Controllers.Admin.AuthController.passwordLogin] User %d (%s) logged in.', $user->id, $user->mobile);
+
+        if ($next = session()->pull('next')) {
+            return redirect($next)->with('success', "{$user->name} خوش آمدید!");
+        }
+
+        return redirect()->route('admin.dashboard')->with('success', "{$user->name} خوش آمدید!");
+    }
+
+    public function showPasswordResetRequestForm()
+    {
+        return view('cms::auth.password_reset_request');
+    }
+
+    public function passwordResetRequest(Request $request)
+    {
+        $request->validate(['mobile' => 'required|numeric|digits:11|starts_with:09']);
+        if (! validateRecaptcha($request->input('g-recaptcha-response'))) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('اعتبارسنجی امنیتی تکمیل نشده است.');
+        }
+
+        $mobile = $request->input('mobile');
+        // make sure user exists and is active.
+        $user = User::byMobile($mobile);
+        if (! $user) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('اطلاعات وارد شده صحیح نیست.');
+        }
+        if (! $user->is_active) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('حساب شما مسدود است.');
+        }
+
+        VerificationCode::saveAndSend($mobile, VerificationCode::CONTEXT_PASSEWORD_RESET);
+        $request->session()->put(AUTH_SESSION_MOBILE_KEY, $mobile);
+
+        return redirect()->route('auth.show_password_reset_verification_form');
+    }
+
+    public function showPasswordResetVerificationForm()
+    {
+        return view('cms::auth.password_reset_verify');
+    }
+
+    public function passwordResetVerify(Request $request)
+    {
+        $request->validate([
+            'code'     => 'required|numeric|digits:5',
+            'password' => 'required',
+        ]);
+
+        $mobile = $request->session()->get(AUTH_SESSION_MOBILE_KEY);
+        if (! $mobile) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('اطلاعات وارد شده نامعتبر است.');
+        }
+
+        if (! VerificationCode::check($mobile, $request->input('code'), VerificationCode::CONTEXT_PASSEWORD_RESET)) {
+            return redirect()->route('auth.show_password_reset_verification_form')->withErrors('کد وارد شده نامعتبر است.');
+        }
+
+        // make sure user exists and is active.
+        $user = User::byMobile($mobile);
+        if (! $user) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('اطلاعات وارد شده صحیح نیست.');
+        }
+        if (! $user->is_active) {
+            return redirect()->route('auth.show_password_reset_request_form')->withErrors('حساب شما مسدود است.');
+        }
+
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        // logout from everywhere.
+        $user->sessions()->delete();
+
+        // create new session.
+        $token = Uuid::uuid4()->toString();
+        AuthSession::create([
+            'user_id'    => $user->id,
+            'mobile'     => $user->mobile,
+            'token'      => $token,
+            'platform'   => 'web',
+            'expires_at' => now()->addDays((int) kv('auth.session.expire_days')),
+        ]);
+        $request->session()->put(AUTH_SESSION_TOKEN_KEY, $token);
+
+        return redirect()->route('admin.dashboard')->with('success', "{$user->name} خوش آمدید! گذرواژه جدید ذخیره شد.");
     }
 
     public function logout(Request $request)

@@ -25,7 +25,6 @@ class CreateArticleCategoriesTable extends Migration
             $table->foreign('parent_id')->references('id')->on('article_categories')->cascadeOnDelete();
         });
 
-        tableComment('article_categories', 'دسته‌بندی مقالات');
     }
 
     /**

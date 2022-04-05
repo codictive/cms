@@ -25,7 +25,6 @@ class CreateSliderItemsTable extends Migration
             $table->foreign('slider_id')->references('id')->on('sliders')->cascadeOnDelete();
         });
 
-        tableComment('slider_items', 'اسلایدهای اسلایدر');
     }
 
     /**

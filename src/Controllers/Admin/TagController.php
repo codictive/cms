@@ -2,10 +2,10 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Models\Tag;
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
+use Codictive\Cms\Models\Tag;
 use Illuminate\Validation\Rule;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class TagController extends Controller
@@ -21,7 +21,7 @@ class TagController extends Controller
     {
         $tags = Tag::paginate(50);
 
-        return view('admin.tags.index', ['tags' => $tags]);
+        return view('cms::admin.tags.index', ['tags' => $tags]);
     }
 
     /**
@@ -31,7 +31,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('admin.tags.create');
+        return view('cms::admin.tags.create');
     }
 
     /**
@@ -54,7 +54,7 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        return view('admin.tags.edit', ['tag' => $tag]);
+        return view('cms::admin.tags.edit', ['tag' => $tag]);
     }
 
     /**
@@ -84,5 +84,22 @@ class TagController extends Controller
         $tag->delete();
 
         return redirect()->route('admin.tags.index')->with('warning', "برچسب {$tag->name} حذف شد.");
+    }
+
+    public function batch(Request $request)
+    {
+        $ticketIds    = $request->batch;
+        if (! $ticketIds) {
+            return redirect()->route('admin.tags.index')->withErrors('برچسب مورد نظر را انتخاب کنید.');
+        }
+
+        switch ($request->input('action')) {
+            case 'delete':
+                Tag::whereIn('id', $ticketIds)->delete();
+
+                break;
+        }
+
+        return redirect()->route('admin.tags.index')->with('info', 'عملیات انجام شد.');
     }
 }

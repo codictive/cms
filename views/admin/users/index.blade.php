@@ -1,17 +1,47 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title('مدیریت کاربران'))
 
 @section('content')
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">پنل مدیریت</a></li>
-    <li class="breadcrumb-item active" aria-current="page">کاربران</li>
-  </ol>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="navbar-collapse" id="navbarSupportedContent">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">پنل مدیریت</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">مدیریت کاربران</li>
+                </ol>
+            </nav>
+            <div class="mx-2">
+                <a class="btn btn-primary" style="width: 90px;" href="{{ route('admin.users.create') }}">
+                    <i class="fas fa-add"></i>
+                    ایجاد
+                </a>
+                <button class="btn btn-outline-dark" type="button" data-toggle="collapse" data-target="#filtersContainer" aria-expanded="false" aria-controls="filtersContainer">فیلتر و جستجو</button>
+            </div>
+            <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="filterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </nav>
 
-<a class="btn btn-outline-primary" href="{{ route('admin.users.create') }}">ایجاد</a>
-<button class="btn btn-outline-dark" type="button" data-toggle="collapse" data-target="#filtersContainer" aria-expanded="false" aria-controls="filtersContainer">فیلتر و جستجو</button>
 <div class="mt-2 @if(!hasFilters()) collapse @endif" id="filtersContainer">
     <div class="shadow card card-body">
         <form method="get" action="{{ route('admin.users.index') }}">
@@ -24,8 +54,8 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="name">نام</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ request()->query('name') }}">
+                        <label for="query">نام</label>
+                        <input type="text" class="form-control" id="query" name="query" value="{{ request()->query('query') }}">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -131,7 +161,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-muted">موردی جهت نمایش وجود ندارد.</td>
+                    <td colspan="7" class="text-muted">موردی جهت نمایش وجود ندارد.</td>
                 </tr>
                 @endforelse
             </tbody>

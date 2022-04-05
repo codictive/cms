@@ -2,9 +2,9 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Codictive\Cms\Models\SystemLog;
 use Codictive\Cms\Traits\RequiresUser;
-use Illuminate\Http\Request;
 use Codictive\Cms\Controllers\Controller;
 
 class SystemLogController extends Controller
@@ -27,7 +27,7 @@ class SystemLogController extends Controller
         }
         $logs = $logs->paginate(100);
 
-        return view('admin.system_logs', ['logs' => $logs]);
+        return view('cms::admin.system_logs', ['logs' => $logs]);
     }
 
     /**

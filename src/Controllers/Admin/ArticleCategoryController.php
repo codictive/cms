@@ -2,11 +2,11 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
-use Codictive\Cms\Models\ArticleCategory;
 use Illuminate\Validation\Rule;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
+use Codictive\Cms\Models\ArticleCategory;
 
 class ArticleCategoryController extends Controller
 {
@@ -21,7 +21,7 @@ class ArticleCategoryController extends Controller
     {
         $categories = ArticleCategory::where('parent_id', $category ? $category->id : null)->orderBy('weight')->orderBy('name')->get();
 
-        return view('admin.article_categories.index', ['category' => $category, 'categories' => $categories]);
+        return view('cms::admin.article_categories.index', ['category' => $category, 'categories' => $categories]);
     }
 
     /**
@@ -31,7 +31,7 @@ class ArticleCategoryController extends Controller
      */
     public function create(?ArticleCategory $parent = null)
     {
-        return view('admin.article_categories.create', ['parent' => $parent]);
+        return view('cms::admin.article_categories.create', ['parent' => $parent]);
     }
 
     /**
@@ -59,7 +59,7 @@ class ArticleCategoryController extends Controller
      */
     public function edit(ArticleCategory $category)
     {
-        return view('admin.article_categories.edit', ['category' => $category]);
+        return view('cms::admin.article_categories.edit', ['category' => $category]);
     }
 
     /**

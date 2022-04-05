@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title('مقالات وبلاگ'))
 
@@ -17,25 +17,81 @@
                     <i class="fas fa-add"></i>
                     ایجاد
                 </a>
+                <button class="btn btn-outline-dark" type="button" data-toggle="collapse" data-target="#filtersContainer" aria-expanded="false" aria-controls="filtersContainer">فیلتر و جستجو</button>
             </div>
-            <form class="d-flex ms-auto" action="" method="post">
-                <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button">
-                        <i class="fas fa-filter"></i>
-                    </button>
-                    <input type="text" class="form-control" placeholder="جستجو...">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </nav>
+<div class="mt-2 @if(!hasFilters()) collapse @endif" id="filtersContainer">
+    <div class="shadow card card-body">
+        <form method="get" action="{{ route('admin.articles.index') }}">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="id">شناسه</label>
+                        <input type="text" class="form-control" id="id" name="id" value="{{ request()->query('id') }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="title">عنوان</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ request()->query('title') }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="status">وضعیت</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="">-- مهم نیست --</option>
+                            <option value="published" @if(request()->query('status') == 'published') selected @endif>منتشر شده</option>
+                            <option value="unpublished" @if(request()->query('status') == 'unpublished') selected @endif>منتشر نشده</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="order_by">مرتب‌سازی بر اساس</label>
+                        <select class="form-control" id="order_by" name="order_by">
+                            <option value="id" @if(request()->query('order_by') == 'id') selected @endif>شناسه</option>
+                            <option value="title" @if(request()->query('order_by') == 'title') selected @endif>عنوان</option>
+                            <option value="published" @if(request()->query('order_by') == 'published') selected @endif>وضعیت</option>
+                            <option value="created_at" @if(request()->query('order_by') == 'created_at') selected @endif>تاریخ ثبت</option>
+                            <option value="updated_at" @if(request()->query('order_by') == 'updated_at') selected @endif>تاریخ به‌روز رسانی</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="order_dir">در جهت</label>
+                        <select class="form-control" id="order_dir" name="order_dir">
+                            <option value="DESC" @if(request()->query('order_dir') == 'DESC') selected @endif>نزولی</option>
+                            <option value="ASC" @if(request()->query('order_dir') == 'ASC') selected @endif>صعودی</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="per_page">تعداد مقاله در هر صفحه</label>
+                        <input type="number" class="form-control" id="per_page" name="per_page" value="{{ request()->query('per_page') ?: 30 }}">
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-outline-success" value="بگرد">
+            @if(hasFilters())
+            <a class="btn btn-outline-warning mx-2" href="{{ route('admin.articles.index') }}">حذف فیلتر</a>
+            @endif
+        </form>
+    </div>
+</div>
+<form method="post" action="{{ route('admin.articles.batch') }}" id="batch-form">
+@csrf
 <div class="table-responsive">
     <table class="table table-hover my-4">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" id="checkAll">
+                </th>
                 <th>#</th>
                 <th>عنوان</th>
                 <th>اسلاگ</th>
@@ -48,6 +104,7 @@
         <tbody>
             @forelse($articles as $a)
             <tr>
+                <td><input type="checkbox" name="batch[]" value="{{ $a->id }}"></td>
                 <td>{{ $a->id }}</td>
                 <td>{{ $a->title }}</td>
                 <td>{{ $a->slug }}</td>
@@ -73,5 +130,21 @@
         </tbody>
     </table>
 </div>
-{{ $articles->links() }}
+<div class="clearfix">
+    <div class="w-25 float-left">
+        <div class="form-group">
+            <select class="form-control" name="action" id="action">
+                <option value="" selected>عملیات گروهی</option>
+                <option value="import">درون‌ریزی CSV</option>
+                <option value="category">دسته‌بندی</option>
+                <option value="published">وضعیت انتشار</option>
+                <option value="delete">حذف</option>
+            </select>
+        </div>
+    </div>
+    <div class="float-right">
+        {{ $articles->appends($_GET)->links() }}
+    </div>
+</div>
+</form>
 @endsection

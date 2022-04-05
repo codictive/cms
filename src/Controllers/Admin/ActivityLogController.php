@@ -4,14 +4,11 @@ namespace Codictive\Cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Codictive\Cms\Models\ActivityLog;
-use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 
 class ActivityLogController extends Controller
 {
-    use RequiresUser;
-
     /**
      * Displays system logs.
      *
@@ -19,7 +16,7 @@ class ActivityLogController extends Controller
      */
     public function index(Request $request)
     {
-        $logs = ActivityLog::with(['user']);
+        $logs = ActivityLog::with(['user'])->latest();
         if ($request->query('user_id')) {
             $logs = $logs->where('user_id', $request->query('user_id'));
         }
@@ -39,14 +36,18 @@ class ActivityLogController extends Controller
             });
         }
 
-        $logs    = $logs->orderBy('id', 'DESC')->paginate(100);
-        $actions = ActivityLog::ACTIONS;
+        $logs    = $logs->paginate(100);
+        $actions = [
+            ActivityLog::ACTION_LOGIN,
+            ActivityLog::ACTION_LOGOUT,
+            ActivityLog::ACTION_REGISTER,
+        ];
 
-        return view('admin.activity_logs.index', ['logs' => $logs, 'actions' => $actions]);
+        return view('cms::admin.activity_logs.index', ['logs' => $logs, 'actions' => $actions]);
     }
 
     public function show(ActivityLog $log)
     {
-        return view('admin.activity_logs.show', ['log' => $log]);
+        return view('cms::admin.activity_logs.show', ['log' => $log]);
     }
 }

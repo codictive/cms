@@ -15,30 +15,13 @@ class MenuSeeder extends Seeder
         // App Navigation Menu.
         $app = Menu::create(['name' => 'پیمایش سایت', 'slug' => 'app_navigation']);
         $app->items()->create(['title' => 'صفحه اصلی', 'path' => '/']);
-        $app->items()->create(['title' => 'لیست قیمت', 'path' => '/products/price-list']);
         $app->items()->create(['title' => 'مقالات', 'path' => '/blog']);
         $app->items()->create(['title' => 'درباره ما', 'path' => '/pages/about']);
         $app->items()->create(['title' => 'سوالات متداول', 'path' => '/faq']);
         $app->items()->create(['title' => 'ارتباط با ما', 'path' => '/contact']);
 
-        // First Footer Menu.
-        $foterRight = Menu::create(['name' => 'لینک‌های سریع', 'slug' => 'quick_links']);
-        $foterRight->items()->create(['title' => 'صفحه اصلی', 'path' => '/']);
-        $foterRight->items()->create(['title' => 'لیست قیمت', 'path' => '/products/price-list']);
-        $foterRight->items()->create(['title' => 'درباره ما', 'path' => '/pages/about']);
-        $foterRight->items()->create(['title' => 'وبلاگ', 'path' => '/blog']);
-        $foterRight->items()->create(['title' => 'ارتباط با ما', 'path' => '/contact']);
-
-        // Second Footer Menu.
-        $FooterLeft = Menu::create(['name' => 'خدمات ما', 'slug' => 'our_services']);
-        $FooterLeft->items()->create(['title' => 'محصولات', 'path' => '/products']);
-        $FooterLeft->items()->create(['title' => 'استعلام قیمت', 'path' => '/panel/tickets?department=استعلام%20قیمت&subject=استعلام%20قیمت&#body']);
-        $FooterLeft->items()->create(['title' => 'ثبت سفارش', 'path' => '/panel/orders/create']);
-        $FooterLeft->items()->create(['title' => 'سوالات متداول', 'path' => '/faq']);
-
         // Admin Navigation Menu.
         $admin = Menu::create(['name' => 'پیمایش پنل مدیریت', 'slug' => 'admin_navigation']);
-
 
         $content = $admin->items()->create(['title' => 'محتوا', 'path' => '#']);
         $admin->items()->create(['title' => 'مقالات', 'path' => '/admin/articles', 'parent_id' => $content->id, 'prefix' => '/admin/articles']);
@@ -53,7 +36,6 @@ class MenuSeeder extends Seeder
         $admin->items()->create(['title' => 'منوها', 'path' => '/admin/menus', 'parent_id' => $structure->id, 'prefix' => '/admin/menus']);
         $admin->items()->create(['title' => 'اسلایدرها', 'path' => '/admin/sliders', 'parent_id' => $structure->id, 'prefix' => '/admin/sliders']);
         $admin->items()->create(['title' => 'برچسب‌ها', 'path' => '/admin/tags', 'parent_id' => $structure->id, 'prefix' => '/admin/tags']);
-        $admin->items()->create(['title' => 'مکان‌ها', 'path' => '/admin/provinces', 'parent_id' => $structure->id, 'prefix' => '/admin/provinces']);
 
         $users = $admin->items()->create(['title' => 'کاربران', 'path' => '#']);
         $admin->items()->create(['title' => 'مدیریت کاربران', 'path' => '/admin/users', 'weight' => 0, 'parent_id' => $users->id, 'prefix' => '/admin/users']);

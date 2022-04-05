@@ -1,20 +1,17 @@
-<ul id="accordion"  class="{{ $class }}">
+<ul class="{{ $class }}">
     @foreach($items as $i)
         @if($i['childs'])
-        <li>
-            <div class="link">{{ $i['title'] }}<i class="fa fa-chevron-down"></i>
-            </div>
-            <ul class="submenu" @if($i['active']) style="display:block;" @endif>
+        <li class="nav-item dropdown @if($i['active']) active @endif">
+            <a class="nav-link dropdown-toggle" href="{{ $i['path'] }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $i['title'] }}</a>
+            <div class="dropdown-menu">
                 @foreach ($i['childs'] as $c)
-                <li>
-                    <a @if($c['active']) class="active" @endif" href="{{ $c['path'] }}">{{ $c['title'] }}</a>
-                </li>
+                <a class="dropdown-item @if($c['active']) active @endif" href="{{ $c['path'] }}">{{ $c['title'] }}</a>
                 @endforeach
-            </ul>
+            </div>
         </li>
         @else
-        <li class="slide @if($i['active']) active @endif">
-            <a class="link" href="{{ $i['path'] }}">{{ $i['title'] }}</a>
+        <li class="nav-item @if($i['active']) active @endif">
+            <a class="nav-link" href="{{ $i['path'] }}">{{ $i['title'] }}</a>
         </li>
         @endif
     @endforeach

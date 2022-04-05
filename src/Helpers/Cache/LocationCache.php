@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\Cache;
+namespace Codictive\Cms\Helpers\Cache;
 
 use Carbon\Carbon;
 use Codictive\Cms\Models\Province;
@@ -33,14 +33,14 @@ class LocationCache
     {
         if (self::ttl() == null) {
             return Cache::rememberForever(CACHE_KEY_LOCATIONS, function () {
-                SystemLog::info('[helpers.Cache.LocationCache.get] Locations cache not found. Generating now...');
+                SystemLog::info('[helpers.Cache.LocationCache.get]', ' Locations cache not found. Generating now...');
 
                 return self::generate();
             });
         }
 
         return Cache::remember(CACHE_KEY_LOCATIONS, self::ttl(), function () {
-            SystemLog::info('[helpers.Cache.LocationCache.get] Locations cache not found. Generating now...');
+            SystemLog::info('[helpers.Cache.LocationCache.get]', 'Locations cache not found. Generating now...');
 
             return self::generate();
         });

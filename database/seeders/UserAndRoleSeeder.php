@@ -25,6 +25,7 @@ class UserAndRoleSeeder extends Seeder
             'password'        => '$2y$10$IVOOy2QZjOBTL/uPKTqf4u83kK9UQYXxwFNvm1Ytu6Vm1Dp5Vp9Sa',
         ]);
         $u->roles()->attach($admin);
+        $u->profile()->create(['name' => $u->name, 'is_approved' => true]);
         $u->is_verified = true;
         $u->save();
 
@@ -35,6 +36,7 @@ class UserAndRoleSeeder extends Seeder
             'password'        => '$2y$10$IVOOy2QZjOBTL/uPKTqf4u83kK9UQYXxwFNvm1Ytu6Vm1Dp5Vp9Sa',
         ]);
         $u->roles()->attach($admin);
+        $u->profile()->create(['name' => $u->name, 'is_approved' => true]);
         $u->is_verified = true;
         $u->save();
     }

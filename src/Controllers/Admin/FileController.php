@@ -18,12 +18,12 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
-        $files = File::withTrashed();
-        if ($request->query('attachable_type')) {
-            $files = $files->where('attachable_type', $request->query('attachable_type'));
+        $files = File::with([]);
+        if ($request->query('related_type')) {
+            $files = $files->where('related_type', $request->query('related_type'));
         }
-        if ($request->query('attachable_id')) {
-            $files = $files->where('attachable_id', $request->query('attachable_id'));
+        if ($request->query('related_id')) {
+            $files = $files->where('related_id', $request->query('related_id'));
         }
         if ($request->query('attach_context')) {
             $files = $files->where('attach_context', 'LIKE', "%{$request->query('attach_context')}%");
@@ -33,9 +33,6 @@ class FileController extends Controller
         }
         if ($request->query('mimetype')) {
             $files = $files->where('mimetype', 'LIKE', "%{$request->query('mimetype')}%");
-        }
-        if ($request->query('attachable_id')) {
-            $files = $files->where('attachable_id', $request->query('attachable_id'));
         }
         if ($request->query('deleted') == 'true') {
             $files = $files->whereNotNull('deleted_at');
@@ -49,7 +46,7 @@ class FileController extends Controller
         $perPage  = $request->query('per_page')  ?? 30;
         $files    = $files->orderBy($orderBy, $orderDir)->paginate($perPage);
 
-        return view('admin.files.index', ['files' => $files]);
+        return view('cms::admin.files.index', ['files' => $files]);
     }
 
     /**
@@ -59,7 +56,7 @@ class FileController extends Controller
      */
     public function create()
     {
-        return view('admin.files.create');
+        return view('cms::admin.files.create');
     }
 
     /**
@@ -96,7 +93,7 @@ class FileController extends Controller
     {
         $file = File::withTrashed()->find($id);
 
-        return view('admin.files.show', ['file' => $file]);
+        return view('cms::admin.files.show', ['file' => $file]);
     }
 
     /**
@@ -106,7 +103,7 @@ class FileController extends Controller
      */
     public function edit(File $file)
     {
-        return view('admin.files.edit', ['file' => $file]);
+        return view('cms::admin.files.edit', ['file' => $file]);
     }
 
     /**

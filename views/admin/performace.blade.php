@@ -1,10 +1,15 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 @section('title', title('کارایی'))
 
 @php($locationsTtl = (int) kv('cache.locations.ttl'))
 @php($categoriesTtl = (int) kv('cache.categories.ttl'))
 @section('content')
-<h1 class="fw-200">کارایی</h1>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">پنل مدیریت</a></li>
+    <li class="breadcrumb-item active" aria-current="page">کارایی</li>
+  </ol>
+</nav>
 <div class="row mt-5">
     <div class="col-6">
         <div class="card">

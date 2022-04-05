@@ -4,32 +4,30 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">ورود به سیستم</div>
+    <div class="card-header">
+        <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="{{ route('auth.show_login_form') }}">ورود</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('auth.show_password_login_form') }}">ورود با گذرواژه</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('auth.show_password_reset_request_form') }}">بازیابی گذرواژه</a>
+            </li>
+        </ul>
+    </div>
     <div class="card-body">
-        <form id="loginForm" method="post" action="{{ route('auth.login') }}">
+        <form method="post" action="{{ route('auth.login') }}" id="loginForm">
             @csrf
             <div class="form-group">
-                <label class="required" for="email">ایمیل</label>
-                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
-                @error('email')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label class="required" for="password">گذرواژه</label>
-                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
-                @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
+                <label for="mobile">تلفن همراه</label>
+                <input type="number" class="form-control" id="mobile" name="mobile" placeholder="09123456789" required autofocus>
             </div>
             <button class="g-recaptcha btn btn-success"
-            data-sitekey="{{ kv('keys.recaptcha.site_key') }}"
-            data-callback='onSubmit'
-            data-action='submit'>ورود</button>
+                data-sitekey="{{ kv('keys.recaptcha.site_key') }}"
+                data-callback='onSubmit'
+                data-action='submit'>ادامه</button>
         </form>
     </div>
 </div>

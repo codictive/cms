@@ -20,7 +20,6 @@ class CreateMenusTable extends Migration
             $table->timestamps();
         });
 
-        tableComment('menus', 'منوها');
     }
 
     /**

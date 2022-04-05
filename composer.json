@@ -9,6 +9,7 @@
     "require": {
         "php": "^8.0",
         "laravel/framework": "^9.5",
+        "kavenegar/php": "^1.2",
         "intervention/image": "^2.7"
     },
     "license": "MIT",

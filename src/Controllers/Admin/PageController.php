@@ -2,10 +2,10 @@
 
 namespace Codictive\Cms\Controllers\Admin;
 
-use Codictive\Cms\Models\Page;
-use Codictive\Cms\Traits\RequiresUser;
 use Illuminate\Http\Request;
+use Codictive\Cms\Models\Page;
 use Illuminate\Validation\Rule;
+use Codictive\Cms\Traits\RequiresUser;
 use Codictive\Cms\Controllers\Controller;
 
 class PageController extends Controller
@@ -21,7 +21,7 @@ class PageController extends Controller
     {
         $pages = Page::orderBy('id', 'DESC')->paginate(30);
 
-        return view('admin.pages.index', ['pages' => $pages]);
+        return view('cms::admin.pages.index', ['pages' => $pages]);
     }
 
     /**
@@ -31,7 +31,7 @@ class PageController extends Controller
      */
     public function create()
     {
-        return view('admin.pages.create');
+        return view('cms::admin.pages.create');
     }
 
     /**
@@ -65,7 +65,7 @@ class PageController extends Controller
      */
     public function edit(Page $page)
     {
-        return view('admin.pages.edit', ['page' => $page]);
+        return view('cms::admin.pages.edit', ['page' => $page]);
     }
 
     /**

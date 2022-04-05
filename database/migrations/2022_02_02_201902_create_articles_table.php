@@ -33,7 +33,6 @@ class CreateArticlesTable extends Migration
             $table->foreign('article_category_id')->references('id')->on('article_categories')->nullOnDelete();
         });
 
-        tableComment('articles', 'مقالات');
     }
 
     /**

@@ -28,7 +28,6 @@ class CreatePagesTable extends Migration
             $table->timestamps();
         });
 
-        tableComment('pages', 'صفحات استاتیک');
     }
 
     /**

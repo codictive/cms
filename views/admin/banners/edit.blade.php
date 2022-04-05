@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('cms::layouts.admin')
 
 @section('title', title($banner->name))
 
@@ -32,7 +32,7 @@
         <label for="file">فایل</label>
         @if($banner->file_name)
         <div>
-            {!! showBanner($banner, 'img-thumbnail', 'width: 300px') !!}
+            <img src="/static/banners/{{ $banner->file_name }}" width="300px">
         </div>
         <small class="text-muted">تنها جهت تغییر بنر فایل جدیدی انتخاب کنید.</small>
         @endif

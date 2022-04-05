@@ -1,5 +1,6 @@
 <?php
 
+use Kavenegar\KavenegarApi;
 use Codictive\Cms\Models\SystemLog;
 
 /**
@@ -38,28 +39,15 @@ function sendSMS($receiver, $message): bool
  * @param mixed      $template
  * @param mixed|null $token1
  * @param mixed|null $token2
- * @param mixed      $data
+ *
+ * @return bool
  */
-function sendTemplateSMS($receiver, $data, $template): bool
+function sendTemplateSMS($receiver, $code, $template, $token1 = null, $token2 = null)
 {
-    if (! $template) {
-        SystemLog::error('[Helpers.sendTemplateSMS] Pattern $template is falsy.');
-
-        return false;
-    }
-
     try {
-        $client = new SoapClient('http://ippanel.com/class/sms/wsdlservice/server.php?wsdl');
-        $client->sendPatternSms(
-            kv('keys.sms.send_number'),
-            [$receiver],
-            kv('keys.sms.username'),
-            kv('keys.sms.password'),
-            $template,
-            $data
-        );
+        (new KavenegarApi(kv('keys.sms.kavenegar')))->VerifyLookup($receiver, $code, null, null, $template, $token1, $token2);
     } catch (Exception $e) {
-        SystemLog::error("[Helpers.sendTemplateSMS] Can't send SMS: %s (%d)", $e->getMessage(), $e->getCode());
+        SystemLog::error("[helpers.sendTemplateSMS] Can't send template %s SMS: %s (%d)", $template, $e->getMessage(), $e->getCode());
 
         return false;
     }
